@@ -172,7 +172,7 @@
       <workItem from="1588072141277" duration="2442000" />
       <workItem from="1588074597717" duration="119970000" />
       <workItem from="1588329532192" duration="19605000" />
-      <workItem from="1588386474593" duration="1343000" />
+      <workItem from="1588386474593" duration="2178000" />
     </task>
     <task id="LOCAL-00001" summary="version: 1.0&#10;下一版本添加通信功能">
       <created>1588386674810</created>
@@ -188,7 +188,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588387143902</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="version: 1.0&#10;下一版本添加通信功能">
+      <created>1588393816155</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1588393816155</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -231,10 +238,10 @@
       <screen x="0" y="0" width="1739" height="939" />
     </state>
     <state x="538" y="154" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1739.939@0.0.1739.939" timestamp="1588082399094" />
-    <state x="402" y="0" key="CommitChangelistDialog2" timestamp="1588387142469">
+    <state x="402" y="0" key="CommitChangelistDialog2" timestamp="1588393815174">
       <screen x="0" y="0" width="1739" height="939" />
     </state>
-    <state x="402" y="0" key="CommitChangelistDialog2/0.0.1739.939@0.0.1739.939" timestamp="1588387142469" />
+    <state x="402" y="0" key="CommitChangelistDialog2/0.0.1739.939@0.0.1739.939" timestamp="1588393815174" />
     <state x="637" y="210" key="FileChooserDialogImpl" timestamp="1588387038113">
       <screen x="0" y="0" width="1739" height="939" />
     </state>
@@ -303,10 +310,10 @@
       <screen x="0" y="0" width="1739" height="939" />
     </state>
     <state x="444" y="47" key="SettingsEditor/0.0.1739.939@0.0.1739.939" timestamp="1588074352273" />
-    <state x="362" y="119" key="Vcs.Push.Dialog.v2" timestamp="1588387184547">
+    <state x="362" y="119" key="Vcs.Push.Dialog.v2" timestamp="1588393823897">
       <screen x="0" y="0" width="1739" height="939" />
     </state>
-    <state x="362" y="119" key="Vcs.Push.Dialog.v2/0.0.1739.939@0.0.1739.939" timestamp="1588387184547" />
+    <state x="362" y="119" key="Vcs.Push.Dialog.v2/0.0.1739.939@0.0.1739.939" timestamp="1588393823897" />
     <state x="783" y="65" width="653" height="798" key="find.popup" timestamp="1587788633366">
       <screen x="0" y="0" width="1739" height="939" />
     </state>
