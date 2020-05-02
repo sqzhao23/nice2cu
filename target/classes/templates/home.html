@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>Nice2cu</title>
+
+    <link rel="icon" href="img/static/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="img/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="css/home.css">
+    <link rel="stylesheet" href="css/Dynamic_bg.css">
+
+    <link rel="stylesheet" href="css/bootstrap/3.3.7/bootstrap.min.css">
+    <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/bootstrap/3.3.7/bootstrap.min.js"></script>
+
+    <script src="js/vue/2.6.11/vue.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/vue-router/2.7.0/vue-router.min.js" type="text/javascript"></script>
+
+    <script src="js/axios/axios.min.js"></script>
+
+    <script src="js/showPhoto.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/showDiv.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="js/userInfo.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/setting.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/addFriend.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/startChat.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/news.js" type="text/javascript" charset="utf-8"></script>
+
+
+</head>
+<body>
+
+<!-- 粒子背景光效 -->
+<canvas></canvas>
+<script src="js/bg/zrveeq.js"></script>
+<script src="js/bg/canvas.js"></script>
+
+
+<div class="page-body">
+
+    <!-- 菜单列表 -->
+    <div class="menu">
+        <div class="menu-head">
+            <div class="menu-head-photo">
+                <img th:src="@{img/user/{photo}.jpg (photo=${session.user.photo})}" class="menu-head-img" onclick="showDiv('user-info-page')" >
+            </div>
+            <div class="menu-head-info">
+                <h3 id="user-name" class="menu-head-nickname" th:text="${session.user.name}"></h3>
+            </div>
+        </div>
+
+        <div style="overflow-y: auto; max-height: 480px;">
+            <div class="menu-search">
+                <form id="search-form" v-cloak>
+                    <div class="search-bar">
+                        <input class="menu-search-text" type="text" v-model="searchString" placeholder="搜索联系人或群聊" />
+                    </div>
+                    <ul>
+                        <li v-for="result2 in filteredresults2">
+                            <a><img v-bind:src="'img/user/' + result2.photo + '.jpg'" />
+                                <p>{{result2.name}}</p>
+                            </a>
+                        </li>
+                        <li v-for="result1 in filteredresults1">
+                            <a><img v-bind:src="'img/chat/' + result1.photo + '.jpg'" />
+                                <p>{{result1.name}}</p>
+                            </a>
+                        </li>
+                    </ul>
+                </form>
+
+                <!-- 搜索框自动提示 -->
+                <script>
+                    var demo = new Vue({
+                        el: '#search-form',
+                        data: {
+                            searchString: '',
+                            results1: [
+                                {
+                                    name:'',photo:''
+                                }
+                            ],
+                            results2: [
+                                {
+                                    name:'',photo:''
+                                }
+                            ]
+                        },
+                        mounted: function () { //mounted　表示这个 Vue 对象加载成功了
+                            this.get1();
+                            this.get2();
+                        },
+
+                        methods: {
+                            get1: function () {
+                                var url = "listChat";
+                                axios.get(url).then(function (response) {
+                                    demo.results1 = response.data;
+                                });
+                            },
+                            get2: function () {
+                                var url = "listFriend";
+                                axios.get(url).then(function (response) {
+                                    demo.results2 = response.data;
+                                });
+                            },
+                        },
+
+                        computed: {
+                            // 计算数学，匹配搜索
+                            filteredresults1: function () {
+                                var results_array = this.results1;
+                                var searchString = this.searchString;
+                                if (!searchString) {
+                                    return null;
+                                }
+                                searchString = searchString.trim().toLowerCase();
+                                results_array = results_array.filter(function (item) {
+                                    if (item.name.toLowerCase().indexOf(searchString) !== -1) {
+                                        return item;
+                                    }
+                                })
+                                return results_array;
+                            },
+
+                            filteredresults2: function () {
+                                var results_array = this.results2;
+                                var searchString = this.searchString;
+                                if (!searchString) {
+                                    return null;
+                                }
+                                searchString = searchString.trim().toLowerCase();
+                                results_array = results_array.filter(function (item) {
+                                    if (item.name.toLowerCase().indexOf(searchString) !== -1) {
+                                        return item;
+                                    }
+                                })
+                                return results_array;
+                            }
+                        }
+                    });
+                </script>
+
+            </div>
+
+            <div class="panel-group" id="accordion">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                聊天
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div id="panel-body" class="panel-body" onclick="showDiv('notice-page')">
+                            <div class="menu-chat-img">
+                                <img src="img/static/notice.png">
+                            </div>
+                            <div class="menu-chat-name">
+                                <p>消息通知</p>
+                            </div>
+                        </div>
+                        <div id="panel-body" class="panel-body" onclick="showDiv('start-chat-page')">
+                            <div class="menu-chat-img">
+                                <img src="img/static/add.png">
+                            </div>
+                            <div class="menu-chat-name">
+                                <p>发起群聊</p>
+                            </div>
+                        </div>
+                        <div id="panel-body" class="panel-body" onclick="showDiv('chat-page')">
+                            <div class="menu-chat-img">
+                                <img src="img/static/chat.png">
+                            </div>
+                            <div class="menu-chat-name">
+                                <p>聊天总群1</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                联系人
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div id="panel-body" class="panel-body" onclick="showDiv('add-friend-page')">
+                            <div class="menu-chat-img" style="margin-left: 33px;">
+                                <img src="img/static/add.png">
+                            </div>
+                            <div class="menu-chat-name">
+                                <p>添加联系人</p>
+                            </div>
+                        </div>
+                        <div id="panel-body" class="panel-body" onclick="showDiv('chat-page')">
+                            <div class="menu-friend-img">
+                                <img src="img/static/friend.png">
+                            </div>
+                            <div class="menu-friend-name">
+                                <p>sqzhao</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                动态
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse">
+                        <div id="panel-body" class="panel-body" onclick="showDiv('myNews-page')">
+                            <div class="menu-news-img">
+                                <img src="img/static/news.png">
+                            </div>
+                            <div class="menu-news-user">
+                                <p>我的动态</p>
+                            </div>
+                        </div>
+                        <div id="panel-body" class="panel-body" onclick="showDiv('news-page')">
+                            <div class="menu-news-img">
+                                <img src="img/static/news.png">
+                            </div>
+                            <div class="menu-news-user">
+                                <p>动态广场</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                                设置
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFour" class="panel-collapse collapse">
+                        <div id="panel-body" class="panel-body" onclick="showDiv('user-info-page')">
+                            <div class="menu-setting-img">
+                                <img src="img/static/setting.png">
+                            </div>
+                            <div class="menu-setting-name">
+                                <p>个人信息</p>
+                            </div>
+                        </div>
+                        <div id="panel-body" class="panel-body" onclick="showDiv('account-setting-page')">
+                            <div class="menu-setting-img">
+                                <img src="img/static/setting.png">
+                            </div>
+                            <div class="menu-setting-name">
+                                <p>账号设置</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧区域 -->
+    <div class="right-page">
+
+        <!-- 通知界面 -->
+        <div class="notice-page" id="notice-page" style="display: none">
+            <nav id="notice-page-top" class="navbar navbar-default navbar-fixed-top">
+                <p class="notice-page-name">消息通知</p>
+            </nav>
+            <div class="notice-page-main">
+                <ul class="message-ul"></ul>
+                <li style="list-style-type: none;">1</li>
+            </div>
+        </div>
+
+        <!-- 发起群聊界面 -->
+        <div class="start-chat-page" id="start-chat-page" style="display: none">
+            <nav id="start-page-top" class="navbar navbar-default navbar-fixed-top">
+                <p class="start-page-title">发起群聊</p>
+            </nav>
+            <div class="start-page-main" id="start-page-main">
+                <p class="select-friend-p">选择联系人</p>
+                <div class="friend-list-div">
+                    <ul class="friend-ul" style="margin-left: 40px;" >
+                        <li class="friend-list" style="margin-bottom: 3px;" v-for="friend in friends">
+                            <input type="checkbox" v-model="checkedFriends" v-bind:value="friend.friendId" />
+                            <img class="start-friend-img" v-bind:src="'img/user/' + friend.photo + '.jpg'">
+                            <p class="start-friend-name">{{friend.alias}}</p>
+                        </li>
+                    </ul>
+
+                    <p class="chat-info-p">群信息设置</p>
+
+                    <div class="chat-info-div-1">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <div class="chat-info-div-2" style="margin-left: 20px;">
+                                <label>群聊头像:</label>
+                                <img class="chat-info-photo" id="start-chat-photo" src="img/chat/0.jpg" >
+                                <input name="imgfile" type="file" style="margin-left: 62px;" @change="getFile($event)" onchange="start_chat_photo(this)" accept="image/gif, image/jpeg" required />
+                            </div>
+
+                            <div class="chat-info-div-3" style="margin-top: 5px; margin-left: 20px;">
+                                <label>群聊名称:</label>
+                                <input type="text" v-model="chat_name" maxlength=8 required />
+                            </div>
+
+                            <div class="chat-info-div-4" style="margin-top: 5px; margin-left: 20px; display: inline-block;">
+                                <label>创建时间:</label>
+                                <p style="display: inline-block;">{{time}}</p>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <button class="start-chat-submit" @click="addChat">确&nbsp;定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 聊天界面 -->
+        <div class="chat-page" id="chat-page" style="display: none">
+            <nav id="chat-page-top" class="navbar navbar-default navbar-fixed-top">
+                <p class="chat-friend_name" onclick="">sqzhao</p>
+                <button id="more-info" type="button" class="btn btn-link" onclick="">· · ·</button>
+            </nav>
+            <div class="chat-page-main">
+                <ul class="message-ul"></ul>
+                <li style="list-style-type: none;">1</li>
+            </div>
+            <nav id="chat-page-input" class="navbar navbar-default navbar-fixed-bottom">
+                <div class="chat-input-more">
+                    <img class="photo-input-more" onclick="" src="img/static/emoji.png">
+                    <img class="photo-input-more" onclick="" src="img/static/gallery.png">
+                    <img class="photo-input-more" onclick="" src="img/static/file.png">
+                </div>
+                <textarea class="message" maxlength="160"></textarea>
+                <button type="button" class="button-send btn">发送(s)</button>
+            </nav>
+        </div>
+
+        <!-- 群聊信息界面 -->
+        <div class="chat-info-page" id="chat-info-page" style="display: none">
+            <nav id="chat-info-top" class="navbar navbar-default navbar-fixed-top">
+                <button id="return-chat" type="button" class="btn btn-link" onclick="">↩</button>
+                <p class="chat-info-title">群聊信息</p>
+            </nav>
+            <div class="chat-info-main">
+                <p class="friend-list-p">群成员列表</p>
+                <div class="friend-list-div">
+                    <ul class="chat-friend-ul" style="margin-left: 20px;">
+                        <li class="friend-list" onclick="">
+                            <img class="start-friend-img" src="img/user/0.jpg">
+                            <p class="start-friend-name">赵诗秋</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <p class="chat-info-p">群信息</p>
+
+                <div class="chat-info-div-1">
+                    <div class="chat-info-div-2">
+                        <label>群聊头像:</label>
+                        <img class="chat-info-photo" src="img/chat/0.jpg" >
+                    </div>
+
+                    <div class="chat-info-div-3">
+                        <label>群聊名称:</label>
+                        <p style="display: inline-block;">聊天总群1</p>
+                    </div>
+
+                    <div class="chat-info-div-5">
+                        <label>群聊人数:</label>
+                        <p style="display: inline-block;">50人</p>
+                    </div>
+
+                    <div class="chat-info-div-4">
+                        <label>创建时间:</label>
+                        <p style="display: inline-block;">2020-03-06 15:30</p>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="button" style="margin-left: 260px;">管理群</button>
+                    <p style="display: inline-block;" >(仅群主)</p>
+                </div>
+
+                <div class="chat-info-div-5" style="margin-top: -31px;">
+                    <a href="" style="color: #1B6D85; margin-right: 15px;" >清空聊天记录</a>
+                    <button type="button">退出该群</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 群管理界面 -->
+        <div id="chat-manage-page" class="chat-manage-page" style="display: none">
+            <nav id="chat-info-top1" class="navbar navbar-default navbar-fixed-top">
+                <button id="return-chat1" type="button" class="btn btn-link" onclick="">↩</button>
+                <p class="chat-info-title">群聊管理</p>
+            </nav>
+            <div class="chat-manage-main">
+                <p class="friend-delete-p">群成员列表</p>
+                <div class="friend-manage-div">
+                    <ul class="chat-friend-delete-ul" style="margin-left: 0px;">
+                        <li class="friend-list">
+                            <img class="start-friend-img" src="img/user/0.jpg">
+                            <p class="start-friend-name">赵诗秋</p>
+                            <button type="button" style="float: right; margin-right: 5px;">删除</button>
+                        </li>
+                    </ul>
+
+                    <div style="height: 240px; display: inline-block; position: absolute; top: -8px; left: 240px;">
+                        <div class="menu-search">
+                            <form id="manage-search-form" v-cloak>
+
+                                <div class="search-bar">
+                                    <input class="menu-search-text" type="text" v-model="searchString" placeholder="搜索联系人拉进群聊" />
+                                </div>
+
+                                <ul style="margin-left: 20px; height: 240px; width: 230px;">
+
+                                    <li class="friend-list" v-for="result in filteredresults">
+                                        <img style="float: none; width:32px; height:32px; border-radius: 3px;" v-bind:src="result.image" />
+                                        <p style="font-size: 15px; color: #333333; font-weight: bold; display: inline-block; margin-left: 10px; padding-top: 0;">{{result.name}}</p>
+                                        <button type="button" style="float: right; margin-right: 5px;">加群</button>
+                                    </li>
+                                </ul>
+
+                            </form>
+
+                            <!-- 搜索框自动提示 -->
+                            <script>
+                                var demo_1 = new Vue({
+                                    el: '#manage-search-form',
+                                    data: {
+                                        searchString: "",
+
+                                        // 数据模型，实际环境你可以根据 Ajax 来获取
+                                        results: [
+                                            {
+                                                "name": '',
+                                                "image": ''
+                                            }
+                                        ]
+                                    },
+                                    computed: {
+                                        // 计算数学，匹配搜索
+                                        filteredresults: function() {
+                                            var results_array = this.results,
+                                                searchString = this.searchString;
+                                            if (!searchString) {
+                                                return results_array;
+                                            }
+                                            searchString = searchString.trim().toLowerCase();
+                                            results_array = results_array.filter(function(item) {
+                                                if (item.name.toLowerCase().indexOf(searchString) !== -1) {
+                                                    return item;
+                                                }
+                                            })
+                                            // 返回过来后的数组
+                                            return results_array;;
+                                        }
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="chat-info-p">群信息设置</p>
+
+                <div class="chat-info-div-1">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <div class="chat-info-div-2" style="margin-left: 20px;">
+                            <label>群聊头像:</label>
+                            <img class="chat-info-photo" id="chat-info-photo" src="img/chat/0.jpg" >
+                            <input name="imgfile" type="file" style="margin-left: 62px;" onchange="select_chat_photo(this)" accept="image/gif, image/jpeg" />
+                        </div>
+
+                        <div class="chat-info-div-3" style="margin-top: 5px; margin-left: 20px;">
+                            <label>群聊名称:</label>
+                            <input type="text" name="" maxlength=8  value="聊天总群1" />
+                        </div>
+
+                        <div class="chat-info-div-6" style="margin-top: 5px; margin-left: 20px; display: inline-block;">
+                            <label>群聊人数:</label>
+                            <p style="display: inline-block;">50人</p>
+                        </div>
+
+                        <div class="chat-info-div-4" style="margin-top: 5px; margin-left: 20px; display: inline-block;">
+                            <label>创建时间:</label>
+                            <p style="display: inline-block;">2020-03-06 15:30</p>
+                        </div>
+
+                        <button type="submit" style="margin-top: -4px; margin-left: 360px;">更新</button>
+                    </form>
+                </div>
+
+                <div class="chat-info-div-5" style="float: right; margin-right: 26px; margin-top: -24px;">
+                    <button type="button">解散该群</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 添加联系人界面 -->
+        <div class="add-friend-page" id="add-friend-page" style="display: none">
+            <nav id="add-page-top" class="navbar navbar-default navbar-fixed-top">
+                <p class="add-page-title">添加联系人</p>
+            </nav>
+            <div class="add-page-main" id="addFriend">
+                <div >
+                    <div>
+                        <p class="add-page-p">输入邮箱或昵称搜索:</p>
+                        邮箱<input type="radio" v-model="picked" value="email" name="type"/>
+                        用户名<input type="radio" v-model="picked" value="name" name="type"/>
+                        <input type="text" v-model="searchInfo" maxlength="20" />
+                        <button class="add-page-search" @click="searchFriend" >搜索</button>
+                    </div>
+                    <div class="add-result">
+                        <p class="add-result-success" id="add-result-success" style="visibility: hidden"></p>
+                    </div>
+                </div>
+                <div class="add-result-info" id="add-result-info" style="visibility: hidden">
+                    <div class="add-info-one">
+                        <img class="add-result-img" v-bind:src="'img/user/' + friend.photo + '.jpg'">
+                        <p class="add-result-name">{{friend.name}}</p>
+                        <p class="add-result-gender">{{friend.gender}}</p>
+                    </div>
+                    <div class="add-info-two">
+                        <label>位置:</label>
+                        <p class="add-result-location">{{friend.location}}</p>
+                    </div>
+                    <div class="add-info-three">
+                        <label>个性签名:</label>
+                        <p class="add-result-signature">{{friend.signature}}</p>
+                    </div>
+                    <button class="add-send-message" @click="addAction">发送请求</button>
+                    <p id="add-friend-p" style="visibility: hidden; margin-top: 52px">已发送请求，等待对方同意。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的动态界面 -->
+        <div class="myNews-page" id="myNews-page" style="display: none">
+            <nav id="news-page-top1" class="navbar navbar-default navbar-fixed-top">
+                <p class="my-news">我的动态</p>
+                <button id="send-news" type="button" class="btn btn-link" onclick="showDiv('publish-news-page')">发布...</button>
+            </nav>
+            <div class="news-page-main">
+                <p id="news-p" style="margin-top: 20px; display: none">你还没有发布动态，点击右上角发布吧。</p>
+                <ul class="news-ul">
+                    <li class="news-li" v-for="news in newses" v-bind:id="news.id + 'p'">
+                        <div class="news-main">
+                            <div class="news-left">
+                                <img class="news-head" th:src="@{img/user/{photo}.jpg (photo=${session.user.photo})}">
+                            </div>
+                            <div class="news-right">
+                                <p class="news-title" th:text="${session.user.name}"></p>
+                                <p>{{news.time}}</p>
+                                <p class="news-text">{{news.contentText}}</p>
+                                <div class="new-photo-div">
+                                    <img class="news-photo" v-bind:src="'img/news/' + news.photo + '.jpg'">
+                                </div>
+                                <div class="news-action">
+                                    <p class="view-number">浏览{{news.view}}次</p>
+                                    <button class="delete-button" v-bind:id="news.id" @click="deleteNews">删除</button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 动态广场界面 -->
+        <div class="news-page" id="news-page" style="display: none">
+            <nav id="news-page-top" class="navbar navbar-default navbar-fixed-top">
+                <p class="my-news">动态广场</p>
+            </nav>
+            <div class="news-page-main">
+                <ul class="news-ul">
+                    <li class="news-li" v-for="news in newses">
+                        <div class="news-main">
+                            <div class="news-left">
+                                <img class="news-head" v-bind:src="'img/user/' + news.userPhoto + '.jpg'">
+                            </div>
+                            <div class="news-right">
+                                <p class="news-title">{{news.name}}</p>
+                                <p id="news-time">{{news.time}}</p>
+                                <p class="news-text">{{news.contentText}}</p>
+                                <div class="new-photo-div">
+                                    <img class="news-photo" v-bind:src="'img/news/' + news.photo + '.jpg'">
+                                </div>
+                                <p class="view-number">浏览{{news.view}}次</p>
+                                <button class="down-button" onclick="" type="button">
+                                    <span class="down-number">{{news.hate}}</span>踩
+                                </button>
+                                <button class="up-button" onclick="" type="button">
+                                    <span class="up-number">{{news.love}}</span>点赞
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 发布动态界面 -->
+        <div class="publish-news-page" id="publish-news-page" style="display: none;">
+            <nav id="publish-news-page-top" class="navbar navbar-default navbar-fixed-top">
+                <p class="publish-news-title">新的动态</p>
+            </nav>
+            <div class="publish-page-main">
+                <div class="publish-main">
+                    <div class="publish-left">
+                        <img class="publish-head" th:src="@{img/user/{photo}.jpg (photo=${session.user.photo})}">
+                    </div>
+                    <div class="publish-right" id="publish-right">
+                        <p class="publish-title" th:text="${session.user.name}"></p>
+                        <p id="publish-time">{{news.time}}</p>
+                        <textarea class="publish-text" maxlength="140" placeholder="写下你现在的心情~~" v-model="news.contentText"></textarea>
+                        <label style="display: inline-block;">选择图片文件&nbsp;&nbsp;</label>
+                        <input name="imgfile" type="file" style="display: inline-block;" @change="getFile($event)" onchange="select_single(this)" accept="image/gif, image/jpeg" />
+                        <div class="publish-photo-div">
+                            <img id="publish-photo" src="">
+                        </div>
+                        <button class="publish-news" @click="addNews">发&nbsp;布</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 个人信息界面 -->
+        <div class="user-info-page" id="user-info-page" style="display: none;">
+            <nav id="user-page-top" class="navbar navbar-default navbar-fixed-top">
+                <p class="user-page-title">个人信息</p>
+            </nav>
+            <div class="user-page-main">
+                <p class="user-page-p">更新个人信息</p>
+            <div id="user-info">
+                    <div class="user-info-one">
+                        <label>头像:</label>
+                        <div class="user-page-img">
+                            <img id="user-img" v-bind:src="'img/user/' + friend.photo + '.jpg'">
+                        </div>
+                        <label style="display: inline-block; margin-left: 37px;">选择新的头像</label>
+                        <input name="imgfile" type="file" style="display: inline-block;" @change="getFile($event)" onchange="select_user_img(this)" accept="image/*" />
+                    </div>
+                    <div class="user-info-two">
+                        <label>昵称:</label>
+                        <input class="user-page-name" v-model="friend.name" type="text" />
+                    </div>
+                    <div class="user-info-three">
+                        <label>性别:</label>
+                        男<input type="radio" v-model="friend.gender"  id="gender_man" value="男"/>
+                        女<input type="radio" v-model="friend.gender"  id="gender_women" value="女" />
+                    </div>
+                    <div class="user-info-four">
+                        <label>位置:</label>
+                        <input type="text" v-model="friend.location" name="userLocation" />
+                    </div>
+                    <label style="margin-top: 8px;">个人签名:</label>
+                    <div class="user-info-five">
+                        <textarea v-model="friend.signature" class="user-page-sifnature" maxlength="140"></textarea>
+                    </div>
+                    <button class="user-update-info" @click="update">更&nbsp;&nbsp;新</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 好友信息界面 -->
+        <div class="friend-info-page" id="friend-info-page" style="display: none;">
+            <nav id="friend-page-top" class="navbar navbar-default navbar-fixed-top">
+                <button id="return-friend" type="button" class="btn btn-link" onclick="">↩</button>
+                <p class="friend-page-title">联系人信息</p>
+            </nav>
+            <div class="friend-page-main">
+                <p class="friend-page-p">查看联系人信息</p>
+                <div>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <div class="friend-info-one">
+                            <label>头像:</label>
+                            <div class="friend-page-img">
+                                <img id="friend-img" src="img/user/0.jpg">
+                            </div>
+                        </div>
+                        <div class="friend-info-two">
+                            <label>昵称:</label>
+                            <p class="friend-page-name" id=""> 赵诗秋</p>
+                        </div>
+                        <div class="friend-info-three">
+                            <label>性别:</label>
+                            <p class="friend-page-gender" id=""> 男</p>
+                        </div>
+                        <div class="friend-info-four">
+                            <label>位置:</label>
+                            <p class="friend-page-location" id=""> 陕西安康</p>
+                        </div>
+                        <label>个人签名:</label>
+                        <div class="friend-info-five">
+                            <p class="friend-page-sifnature">&emsp;&emsp;可能是数据库连接有问题，如果使用阿里云的数据库，先检查网络，其次，数据库连接池可能在并发访问的过程中出现问题，我测试时发现出现数据库连接问题</p>
+                        </div>
+                        <div>
+                            <label style="margin-top: 8px;">修改备注:</label>
+                            <input type="text" name="" maxlength=8 id="" value="" />
+                            <button class="friend-update-info" type="submit">确&nbsp;定</button>
+                        </div>
+                        <br>
+                        <a href="" style="color: #1B6D85;">清空聊天记录</a>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 账号设置 -->
+        <div class="account-setting-page" id="account-setting-page" style="display: none;">
+            <nav id="account-page-top" class="navbar navbar-default navbar-fixed-top">
+                <p class="account-page-title">账号设置</p>
+            </nav>
+            <div class="account-page-main">
+                <div class="account-page-one">
+                    <p class="p1">聊天记录设置</p>
+                    <label style="margin-left: 30px;font-size: 16px;">点击删除全部聊天记录</label>
+                    <button style="border-width: 1px;" type="button">删除</button>
+                </div>
+                <div class="account-page-two">
+                    <p class="p2">账号设置</p>
+                    <label style="margin-left: 30px;font-size: 16px;">修改密码:</label>
+                    <div style="margin-left: 30px;" id="password-change">
+                        输入新密码:<input v-model="password" style="margin-bottom: 3px;" type="password" /><br>
+                        请再次输入:<input v-model="repassword" type="password" />
+                        <p id="password-change-p" style="visibility: hidden;color: red;margin-top: 5px">占位</p>
+                        <button id="changePassword_b" style="border-width: 1px; margin-left: 217px" @click="changePassword">修改</button>
+                    </div>
+                    <div style="margin-top: 50px; margin-right: 45px; float: right;">
+                        <a href="logout" style="color: #0f0f0f">退出登录</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+</script>
+</body>
+</html>
