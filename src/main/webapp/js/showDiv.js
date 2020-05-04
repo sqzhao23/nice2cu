@@ -37,23 +37,13 @@ function showDiv(div_id) {
 		$("#notice-page").hide();
 	}
 
-	// document.getElementById("start-chat-page").style.display = "none";
-	// document.getElementById("myNews-page").style.display = "none";
-	// document.getElementById("chat-page").style.display = "none";
-	// document.getElementById("news-page").style.display = "none";
-	// document.getElementById("publish-news-page").style.display = "none";
-	// document.getElementById("user-info-page").style.display = "none";
-	// document.getElementById("account-setting-page").style.display = "none";
-	// document.getElementById("add-friend-page").style.display = "none";
-	// document.getElementById("friend-info-page").style.display = "none";
-	// document.getElementById("chat-info-page").style.display = "none";
-	// document.getElementById("chat-manage-page").style.display = "none";
 
+	var id = event.target.id;
+	var menuNmae = document.getElementById(id).innerText;
+	if ('chat-page' === div_id) {
+		document.getElementById("chat-page-p").innerText = menuNmae;
+		document.getElementById("message-enter").value = id;
+	}
 
-	// if($("#div_id")){
-	// 	$("#div_id").show();
-	// }
-
-	// $("#div_id").css("display", "block");
 	document.getElementById(div_id).style.display = "block";
 }

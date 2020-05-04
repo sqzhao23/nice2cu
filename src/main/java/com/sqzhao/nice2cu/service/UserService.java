@@ -3,10 +3,8 @@ package com.sqzhao.nice2cu.service;
 import com.sqzhao.nice2cu.dao.UserDAO;
 import com.sqzhao.nice2cu.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 /**
  * @program: nice2cu

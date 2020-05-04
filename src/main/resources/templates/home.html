@@ -26,6 +26,7 @@
     <script src="js/addFriend.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/startChat.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/news.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/showChatsAndFriends.js" type="text/javascript" charset="utf-8"></script>
 
 
 </head>
@@ -50,7 +51,7 @@
             </div>
         </div>
 
-        <div style="overflow-y: auto; max-height: 480px;">
+        <div style="overflow-y: auto; max-height: 480px;" id="menu-page">
             <div class="menu-search">
                 <form id="search-form" v-cloak>
                     <div class="search-bar">
@@ -154,28 +155,28 @@
                         </h4>
                     </div>
                     <div id="collapseOne" class="panel-collapse collapse in">
-                        <div id="panel-body" class="panel-body" onclick="showDiv('notice-page')">
+                        <div id="panel-body" class="panel-body">
                             <div class="menu-chat-img">
                                 <img src="img/static/notice.png">
                             </div>
                             <div class="menu-chat-name">
-                                <p>消息通知</p>
+                                <p onclick="showDiv('notice-page')">消息通知</p>
                             </div>
                         </div>
-                        <div id="panel-body" class="panel-body" onclick="showDiv('start-chat-page')">
+                        <div id="panel-body" class="panel-body">
                             <div class="menu-chat-img">
                                 <img src="img/static/add.png">
                             </div>
                             <div class="menu-chat-name">
-                                <p>发起群聊</p>
+                                <p onclick="showDiv('start-chat-page')">发起群聊</p>
                             </div>
                         </div>
-                        <div id="panel-body" class="panel-body" onclick="showDiv('chat-page')">
+                        <div id="panel-body" class="panel-body" v-for="chat in chats">
                             <div class="menu-chat-img">
                                 <img src="img/static/chat.png">
                             </div>
                             <div class="menu-chat-name">
-                                <p>聊天总群1</p>
+                                <p v-bind:id="'chat_' + chat.id" onclick="showDiv('chat-page');closeWebSocket();conectWebSocket();">{{chat.name}}</p>
                             </div>
                         </div>
                     </div>
@@ -197,12 +198,12 @@
                                 <p>添加联系人</p>
                             </div>
                         </div>
-                        <div id="panel-body" class="panel-body" onclick="showDiv('chat-page')">
+                        <div id="panel-body" class="panel-body" v-for="friend in friends">
                             <div class="menu-friend-img">
                                 <img src="img/static/friend.png">
                             </div>
                             <div class="menu-friend-name">
-                                <p>sqzhao</p>
+                                <p v-bind:id="'friend' + friend.id" onclick="showDiv('chat-page');closeWebSocket();conectWebSocket();">{{friend.name}}</p>
                             </div>
                         </div>
                     </div>
@@ -326,12 +327,14 @@
         <!-- 聊天界面 -->
         <div class="chat-page" id="chat-page" style="display: none">
             <nav id="chat-page-top" class="navbar navbar-default navbar-fixed-top">
-                <p class="chat-friend_name" onclick="">sqzhao</p>
+                <p class="chat-friend_name" id="chat-page-p">sqzhao</p>
                 <button id="more-info" type="button" class="btn btn-link" onclick="">· · ·</button>
             </nav>
             <div class="chat-page-main">
                 <ul class="message-ul"></ul>
-                <li style="list-style-type: none;">1</li>
+                <li style="list-style-type: none;">
+                    <p id="message"></p>
+                </li>
             </div>
             <nav id="chat-page-input" class="navbar navbar-default navbar-fixed-bottom">
                 <div class="chat-input-more">
@@ -339,8 +342,8 @@
                     <img class="photo-input-more" onclick="" src="img/static/gallery.png">
                     <img class="photo-input-more" onclick="" src="img/static/file.png">
                 </div>
-                <textarea class="message" maxlength="160"></textarea>
-                <button type="button" class="button-send btn">发送(s)</button>
+                <textarea class="message" id="message-input" maxlength="160"></textarea>
+                <button type="button" id="message-enter" value="default" class="button-send btn">发送(s)</button>
             </nav>
         </div>
 

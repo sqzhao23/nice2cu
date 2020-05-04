@@ -118,6 +118,23 @@
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
         </dependency>
+
+        <!-- webscoket依赖
+    	此依赖会自动引用基础的组件，比如：
+    	spring-boot-starter-web依赖；
+    	spring-boot-starter-xxx依赖.
+     -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <!-- thymeleaf模板引擎依赖. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

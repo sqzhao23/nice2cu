@@ -56,8 +56,13 @@ public class ChatController {
         chat.setOwnerId(ownerId);
         chat.setMember(friendIds.length+1);
         chat.setTime(time);
-
         chatService.add(chat);
+
+        //新增群主入群成员
+        Member memberOwner = new Member();
+        memberOwner.setUserId(ownerId);
+        memberOwner.setChatId(chat.getId());
+        memberService.add(memberOwner);
 
         //循环新建member
         for (int i=0; i<friendIds.length; i++) {
